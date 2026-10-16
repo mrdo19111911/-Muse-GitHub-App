@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cây trạng thái realtime — 4 papers</title>
+<style>
+body{font-family:DejaVu Sans,Verdana,sans-serif;background:#fafaf7;color:#1e1e1e;margin:0;padding:20px}
+h1{color:#1b3a6e;text-align:center;margin:6px 0 2px;font-size:30px}
+.sub{text-align:center;color:#5a5a5a;margin-bottom:8px}
+.upd{text-align:center;color:#8a8a8a;font-size:13px;margin-bottom:14px}
+.root{max-width:560px;margin:0 auto 18px;background:#dce9f7;border:3px solid #2c5aa0;
+border-radius:14px;text-align:center;font-weight:bold;color:#1b3a6e;font-size:20px;padding:12px}
+.paper{background:#fff;border:3px solid #2c5aa0;border-radius:14px;margin:0 auto 22px;max-width:1180px;overflow:hidden}
+.phead{background:#dce9f7;color:#1b3a6e;font-weight:bold;font-size:21px;padding:10px 18px;border-bottom:2px solid #2c5aa0}
+.ver{color:#5a5a5a;font-weight:normal;font-size:16px}
+.sec{border:2px solid;border-radius:10px;margin:12px;padding:10px 12px;display:flex;gap:14px}
+.sec-t{font-weight:bold;min-width:130px;font-size:17px;padding-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#fff;border:1.5px solid;border-radius:17px;padding:5px 13px;font-size:14.5px}
+.recent{max-width:1180px;margin:0 auto 20px;background:#fff;border:2px solid #ccc;border-radius:10px;padding:10px 16px}
+.recent h3{margin:4px 0 8px;color:#1b3a6e;font-size:17px}
+.rw{padding:4px 0;border-top:1px solid #eee;font-size:14.5px}
+.rt{color:#8a8a8a;margin-right:8px}
+.legend{text-align:center;margin:10px 0 30px}
+.legend span{display:inline-block;border:2px solid;border-radius:8px;padding:6px 16px;margin:0 6px;font-size:14.5px}
+.err{text-align:center;color:#aa3232;display:none;margin-bottom:10px}
+</style>
+</head>
+<body>
+<h1>CÂY TRẠNG THÁI REALTIME — 4 PAPERS</h1>
+<div class="sub">Mỗi chip = một định lý/kết quả · * = mức agent · trang tự nạp dữ liệu mỗi phút</div>
+<div class="upd">Dữ liệu cập nhật lúc: <span id="upd">…</span></div>
+<div class="err" id="err">Chưa tải được dữ liệu — đang thử lại…</div>
+<div class="root">Chương trình 4 papers → tạp chí Q1</div>
+<div id="papers"></div>
+<div class="recent"><h3>Diễn biến gần nhất</h3><div id="recent"></div></div>
+<div class="legend">
+<span style="background:#ddf2dd;border-color:#2e7d32">Đã xong</span>
+<span style="background:#fcefc7;border-color:#b48214">Đang làm</span>
+<span style="background:#e8e8e8;border-color:#6e6e6e">Còn hở / Chờ</span>
+<span style="background:#f5d5d5;border-color:#aa3232">Blocked</span>
+</div>
+<script>
+var CFG={
+ done:   {t:"ĐÃ XONG",     bg:"#ddf2dd", bd:"#2e7d32", tx:"#195a1e"},
+ active: {t:"ĐANG LÀM",    bg:"#fcefc7", bd:"#b48214", tx:"#8c5f0a"},
+ open:   {t:"CÒN HỞ / CHỜ",bg:"#e8e8e8", bd:"#6e6e6e", tx:"#505050"},
+ blocked:{t:"BLOCKED",     bg:"#f5d5d5", bd:"#aa3232", tx:"#962828"}
+};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function __treeStatus(d){
+  if(!d||!d.papers) return;
+  document.getElementById("err").style.display="none";
+  document.getElementById("upd").textContent=d.updated_at||"";
+  var ph=document.getElementById("papers"), html="";
+  for(var i=0;i<d.papers.length;i++){
+    var p=d.papers[i]; html+='<div class="paper"><div class="phead">'+esc(p.name)+' <span class="ver">'+esc(p.version||"")+"</span></div>";
+    for(var j=0;j<p.sections.length;j++){
+      var s=p.sections[j], c=CFG[s.status]||CFG.open;
+      html+='<div class="sec" style="background:'+c.bg+";border-color:"+c.bd+'"><div class="sec-t" style="color:'+c.tx+'">'+c.t+'</div><div class="chips">';
+      for(var k=0;k<s.items.length;k++)
+        html+='<span class="chip" style="border-color:'+c.bd+'">'+esc(s.items[k])+"</span>";
+      html+="</div></div>";
+    }
+    html+="</div>";
+  }
+  ph.innerHTML=html;
+  var rc=document.getElementById("recent"), rh="";
+  (d.recent||[]).forEach(function(r){ rh+='<div class="rw"><span class="rt">'+esc(r.t)+"</span>"+esc(r.text)+"</div>"; });
+  rc.innerHTML=rh;
+}
+var lastTag=null;
+function poll(){
+  if(lastTag&&lastTag.parentNode) lastTag.parentNode.removeChild(lastTag);
+  var s=document.createElement("script");
+  s.src="status.js?t="+Date.now();
+  s.onerror=function(){document.getElementById("err").style.display="block";};
+  lastTag=s; document.head.appendChild(s);
+}
+poll(); setInterval(poll,60000);
+</script>
+</body>
+</html>
