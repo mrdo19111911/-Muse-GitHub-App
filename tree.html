@@ -24,13 +24,13 @@ padding:18px 26px 22px}
 .leaf{display:flex;gap:10px;align-items:baseline;margin:5px 0 5px 52px;font-size:15px}
 .sub2+.leaf,.leaf.first{margin-left:52px}
 .dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;transform:translateY(1px)}
-.dot.finished{background:#2e7d32}.dot.attacking{background:#e6a817}.dot.open{background:#9a9a9a}
+.dot.finished{background:#2e7d32}.dot.attacking{background:#c62828}.dot.open{background:#9a9a9a}
 .lname{color:#1e1e1e;font-weight:bold}
 .ldesc{color:#6a6a6a;font-size:13.5px;margin-top:2px;max-width:760px}
 .st{font-weight:normal;font-size:13px}
-.st-finished{color:#2e7d32}.st-attacking{color:#b48214}.st-open{color:#8a8a8a}
-.atkline{font-size:13px;color:#8a5a00;margin-top:3px}
-.atkbadge{display:inline-block;background:#e6a817;color:#3a2c00;font-weight:bold;border-radius:8px;padding:1px 8px;margin-right:6px;font-size:12.5px}
+.st-finished{color:#2e7d32}.st-attacking{color:#c62828}.st-open{color:#8a8a8a}
+.atkline{font-size:13px;color:#a02020;margin-top:3px}
+.atkbadge{display:inline-block;background:#c62828;color:#fff;font-weight:bold;border-radius:8px;padding:1px 8px;margin-right:6px;font-size:12.5px}
 .count{color:#8a8a8a;font-weight:normal;font-size:13.5px}
 .legend{text-align:center;margin:16px 0 26px;font-size:14px;color:#5a5a5a}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px 0 14px}
@@ -45,7 +45,7 @@ padding:18px 26px 22px}
 <div class="err" id="err">Chưa tải được dữ liệu — đang thử lại…</div>
 <div class="tabs" id="tabs"></div>
 <div class="tree" id="tree"></div>
-<div class="legend"><i style="background:#2e7d32"></i>finished <i style="background:#e6a817"></i>attacking <i style="background:#9a9a9a"></i>open</div>
+<div class="legend"><i style="background:#2e7d32"></i>finished <i style="background:#c62828"></i>attacking <i style="background:#9a9a9a"></i>open</div>
 <script>
 var DATA=null, CUR=0;
 var CN={finished:"finished",attacking:"đang đánh",open:"open"};
@@ -56,7 +56,7 @@ function render(){
  var tb=document.getElementById("tabs"), th="";
  DATA.forEach(function(q,i){th+='<div class="tab'+(i===CUR?" on":"")+'" data-i="'+i+'">'+esc(q.tab||q.name)+"</div>";});
  tb.innerHTML=th;
- Array.prototype.forEach.call(tb.children,function(el){el.onclick=function(){CUR=+el.getAttribute("data-i");location.hash=["hub","a","e3","lwm"][CUR];render();};});
+ Array.prototype.forEach.call(tb.children,function(el){el.onclick=function(){CUR=+el.getAttribute("data-i");location.hash=["hub","a","e3","lwm","thesis"][CUR];render();};});
  var h='<div class="phead">'+esc(p.name)+' <span class="count">'+esc(p.version||"")+"</span></div>"
       +'<div class="pintro">'+esc(p.intro||"")+"</div>";
  p.sections.forEach(function(s){
@@ -87,7 +87,7 @@ function __paperTree(d){
  document.getElementById("err").style.display="none";
  DATA=d.papers; DATA.updated_at=d.updated_at;
  var hsh=(location.hash||"").replace("#",""),
-     idx=["hub","a","e3","lwm"].indexOf(hsh);
+     idx=["hub","a","e3","lwm","thesis"].indexOf(hsh);
  if(idx>=0)CUR=idx;
  render();
 }
