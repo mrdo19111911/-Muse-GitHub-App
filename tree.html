@@ -29,6 +29,8 @@ padding:18px 26px 22px}
 .ldesc{color:#6a6a6a;font-size:13.5px;margin-top:2px;max-width:760px}
 .st{font-weight:normal;font-size:13px}
 .st-finished{color:#2e7d32}.st-attacking{color:#b48214}.st-open{color:#8a8a8a}
+.atkline{font-size:13px;color:#8a5a00;margin-top:3px}
+.atkbadge{display:inline-block;background:#e6a817;color:#3a2c00;font-weight:bold;border-radius:8px;padding:1px 8px;margin-right:6px;font-size:12.5px}
 .count{color:#8a8a8a;font-weight:normal;font-size:13.5px}
 .legend{text-align:center;margin:16px 0 26px;font-size:14px;color:#5a5a5a}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px 0 14px}
@@ -68,10 +70,17 @@ function render(){
  document.getElementById("tree").innerHTML=h;
  document.getElementById("upd").textContent=DATA.updated_at||"";
 }
+function ago(iso){var ms=Date.now()-new Date(iso).getTime();if(ms<0)ms=0;var m=Math.floor(ms/60000);
+ if(m<1)return "vừa bắt đầu";if(m<60)return m+" phút";
+ var h=Math.floor(m/60);return h+" giờ"+(m%60?" "+(m%60)+" phút":"");}
 function leaf(t){
  var line1=esc(t.num||"")+(t.topic?": "+esc(t.topic):"")+' <span class="st st-'+t.status+'">('+esc(t.sword||t.status)+")</span>";
  var line2=t.desc?'<div class="ldesc">'+esc(t.desc)+"</div>":"";
- return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+"</div></div>";
+ var atk="";
+ (t.attacks||[]).forEach(function(a){
+   atk+='<div class="atkline"><span class="atkbadge">'+a.agents+' agents</span> đang đánh '+ago(a.started)+(a.mission?" · "+esc(a.mission):"")+"</div>";
+ });
+ return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+atk+"</div></div>";
 }
 function __paperTree(d){
  if(!d||!d.papers||!d.papers.length)return;
