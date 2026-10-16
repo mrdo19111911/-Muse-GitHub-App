@@ -25,7 +25,10 @@ padding:18px 26px 22px}
 .sub2+.leaf,.leaf.first{margin-left:52px}
 .dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;transform:translateY(1px)}
 .dot.finished{background:#2e7d32}.dot.attacking{background:#e6a817}.dot.open{background:#9a9a9a}
-.lname{color:#1e1e1e}
+.lname{color:#1e1e1e;font-weight:bold}
+.ldesc{color:#6a6a6a;font-size:13.5px;margin-top:2px;max-width:760px}
+.st{font-weight:normal;font-size:13px}
+.st-finished{color:#2e7d32}.st-attacking{color:#b48214}.st-open{color:#8a8a8a}
 .count{color:#8a8a8a;font-weight:normal;font-size:13.5px}
 .legend{text-align:center;margin:16px 0 26px;font-size:14px;color:#5a5a5a}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px 0 14px}
@@ -49,7 +52,7 @@ function render(){
  if(!DATA||!DATA.length)return;
  var p=DATA[CUR%DATA.length];
  var tb=document.getElementById("tabs"), th="";
- DATA.forEach(function(q,i){th+='<div class="tab'+(i===CUR?" on":"")+'" data-i="'+i+'">'+esc(q.name)+"</div>";});
+ DATA.forEach(function(q,i){th+='<div class="tab'+(i===CUR?" on":"")+'" data-i="'+i+'">'+esc(q.tab||q.name)+"</div>";});
  tb.innerHTML=th;
  Array.prototype.forEach.call(tb.children,function(el){el.onclick=function(){CUR=+el.getAttribute("data-i");location.hash=["hub","a","e3","lwm"][CUR];render();};});
  var h='<div class="phead">'+esc(p.name)+' <span class="count">'+esc(p.version||"")+"</span></div>"
@@ -65,7 +68,11 @@ function render(){
  document.getElementById("tree").innerHTML=h;
  document.getElementById("upd").textContent=DATA.updated_at||"";
 }
-function leaf(t){return '<div class="leaf"><span class="dot '+t.status+'"></span><span class="lname">'+esc(t.name)+"</span></div>";}
+function leaf(t){
+ var line1=esc(t.num||"")+(t.topic?": "+esc(t.topic):"")+' <span class="st st-'+t.status+'">('+esc(t.sword||t.status)+")</span>";
+ var line2=t.desc?'<div class="ldesc">'+esc(t.desc)+"</div>":"";
+ return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+"</div></div>";
+}
 function __paperTree(d){
  if(!d||!d.papers||!d.papers.length)return;
  document.getElementById("err").style.display="none";
