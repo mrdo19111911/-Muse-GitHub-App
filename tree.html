@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hình cây — 4 papers</title>
+<style>
+body{font-family:DejaVu Sans,Verdana,sans-serif;background:#fafaf7;color:#1e1e1e;margin:0;padding:20px}
+h1{color:#1b3a6e;text-align:center;margin:6px 0 2px;font-size:28px}
+.sub{text-align:center;color:#5a5a5a;margin-bottom:6px;font-size:14px}
+.upd{text-align:center;color:#8a8a8a;font-size:13px;margin-bottom:12px}
+.nav{text-align:center;margin-bottom:14px}
+.nav a{color:#1b3a6e;font-size:14px}
+.tabs{display:flex;gap:10px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.tab{border:2.5px solid #2c5aa0;background:#fff;color:#1b3a6e;border-radius:12px;
+padding:9px 26px;font-size:17px;font-weight:bold;cursor:pointer}
+.tab.on{background:#2c5aa0;color:#fff}
+.tree{max-width:960px;margin:0 auto;background:#fff;border:3px solid #2c5aa0;border-radius:14px;
+padding:18px 26px 22px}
+.phead{font-size:22px;font-weight:bold;color:#1b3a6e;margin-bottom:2px}
+.pintro{color:#5a5a5a;font-size:14.5px;margin-bottom:14px}
+.sec{margin-top:14px;font-size:17px;font-weight:bold;color:#1b3a6e}
+.sub2{margin:8px 0 2px 26px;font-size:15.5px;font-weight:bold;color:#3a5a8c}
+.leaf{display:flex;gap:10px;align-items:baseline;margin:5px 0 5px 52px;font-size:15px}
+.sub2+.leaf,.leaf.first{margin-left:52px}
+.dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;transform:translateY(1px)}
+.dot.finished{background:#2e7d32}.dot.attacking{background:#e6a817}.dot.open{background:#9a9a9a}
+.lname{color:#1e1e1e}
+.count{color:#8a8a8a;font-weight:normal;font-size:13.5px}
+.legend{text-align:center;margin:16px 0 26px;font-size:14px;color:#5a5a5a}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px 0 14px}
+.err{text-align:center;color:#aa3232;display:none;margin-bottom:10px}
+</style>
+</head>
+<body>
+<h1>HÌNH CÂY — 4 PAPERS</h1>
+<div class="sub">Paper → section → theorem · lá màu theo trạng thái · tự nạp dữ liệu mỗi phút</div>
+<div class="upd">Dữ liệu cập nhật lúc: <span id="upd">…</span></div>
+<div class="nav"><a href="index.html">← bản chips theo trạng thái</a></div>
+<div class="err" id="err">Chưa tải được dữ liệu — đang thử lại…</div>
+<div class="tabs" id="tabs"></div>
+<div class="tree" id="tree"></div>
+<div class="legend"><i style="background:#2e7d32"></i>finished <i style="background:#e6a817"></i>attacking <i style="background:#9a9a9a"></i>open</div>
+<script>
+var DATA=null, CUR=0;
+var CN={finished:"finished",attacking:"đang đánh",open:"open"};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function render(){
+ if(!DATA||!DATA.length)return;
+ var p=DATA[CUR%DATA.length];
+ var tb=document.getElementById("tabs"), th="";
+ DATA.forEach(function(q,i){th+='<div class="tab'+(i===CUR?" on":"")+'" data-i="'+i+'">'+esc(q.name)+"</div>";});
+ tb.innerHTML=th;
+ Array.prototype.forEach.call(tb.children,function(el){el.onclick=function(){CUR=+el.getAttribute("data-i");location.hash=["hub","a","e3","lwm"][CUR];render();};});
+ var h='<div class="phead">'+esc(p.name)+' <span class="count">'+esc(p.version||"")+"</span></div>"
+      +'<div class="pintro">'+esc(p.intro||"")+"</div>";
+ p.sections.forEach(function(s){
+   h+='<div class="sec">'+esc(s.title)+"</div>";
+   (s.theorems||[]).forEach(function(t){h+=leaf(t);});
+   (s.subs||[]).forEach(function(x){
+     if((x.theorems||[]).length){h+='<div class="sub2">'+esc(x.title)+"</div>";
+       x.theorems.forEach(function(t){h+=leaf(t);});}
+   });
+ });
+ document.getElementById("tree").innerHTML=h;
+ document.getElementById("upd").textContent=DATA.updated_at||"";
+}
+function leaf(t){return '<div class="leaf"><span class="dot '+t.status+'"></span><span class="lname">'+esc(t.name)+"</span></div>";}
+function __paperTree(d){
+ if(!d||!d.papers||!d.papers.length)return;
+ document.getElementById("err").style.display="none";
+ DATA=d.papers; DATA.updated_at=d.updated_at;
+ var hsh=(location.hash||"").replace("#",""),
+     idx=["hub","a","e3","lwm"].indexOf(hsh);
+ if(idx>=0)CUR=idx;
+ render();
+}
+var lastTag=null;
+function poll(){
+ if(lastTag&&lastTag.parentNode)lastTag.parentNode.removeChild(lastTag);
+ var s=document.createElement("script");
+ s.src="tree.js?t="+Date.now();
+ s.onerror=function(){document.getElementById("err").style.display="block";};
+ lastTag=s;document.head.appendChild(s);
+}
+poll();setInterval(poll,60000);
+</script>
+</body>
+</html>
