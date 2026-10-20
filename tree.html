@@ -19,37 +19,121 @@ padding:9px 26px;font-size:17px;font-weight:bold;cursor:pointer}
 padding:18px 26px 22px}
 .phead{font-size:22px;font-weight:bold;color:#1b3a6e;margin-bottom:2px}
 .pintro{color:#5a5a5a;font-size:14.5px;margin-bottom:14px}
-.sec{margin-top:14px;font-size:17px;font-weight:bold;color:#1b3a6e}
+.sec{margin-top:16px;font-size:17px;font-weight:bold;color:#1b3a6e}
 .sub2{margin:8px 0 2px 26px;font-size:15.5px;font-weight:bold;color:#3a5a8c}
 .leaf{display:flex;gap:10px;align-items:baseline;margin:5px 0 5px 52px;font-size:15px}
 .sub2+.leaf,.leaf.first{margin-left:52px}
 .dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;transform:translateY(1px)}
-.dot.finished{background:#2e7d32}.dot.attacking{background:#c62828}.dot.open{background:#9a9a9a}
+.dot.finished{background:#2e7d32}.dot.attacking{background:#c62828}
+.dot.paused{background:#e6b800}.dot.open{background:#9a9a9a}
 .lname{color:#1e1e1e;font-weight:bold}
 .ldesc{color:#6a6a6a;font-size:13.5px;margin-top:2px;max-width:760px}
+.lnote{font-size:13.5px;margin-top:3px;max-width:760px;color:#195a1e}
 .st{font-weight:normal;font-size:13px}
-.st-finished{color:#2e7d32}.st-attacking{color:#c62828}.st-open{color:#8a8a8a}
+.st-finished{color:#2e7d32}.st-attacking{color:#c62828}
+.st-paused{color:#a87e00}.st-open{color:#8a8a8a}
 .atkline{font-size:13px;color:#a02020;margin-top:3px}
+.atkline.done{color:#2e7d32}
 .atkbadge{display:inline-block;background:#c62828;color:#fff;font-weight:bold;border-radius:8px;padding:1px 8px;margin-right:6px;font-size:12.5px}
+.atkbadge.done{background:#2e7d32}
 .count{color:#8a8a8a;font-weight:normal;font-size:13.5px}
 .legend{text-align:center;margin:16px 0 26px;font-size:14px;color:#5a5a5a}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 4px 0 14px}
 .err{text-align:center;color:#aa3232;display:none;margin-bottom:10px}
+/* --- conjecture blocks --- */
+.sep{color:#9a9a9a;white-space:nowrap;overflow:hidden;margin:20px 0 4px;font-size:14px;letter-spacing:1px}
+.cblock{border:2px solid #d8d8d8;border-left:7px solid #9a9a9a;border-radius:10px;
+padding:12px 16px;margin:12px 0;background:#fff}
+.cblock .lname{font-size:16.5px}
+.csummary{font-size:14px;color:#333;margin-top:5px;max-width:820px;line-height:1.45}
+.cnote{font-size:13.5px;margin-top:6px;max-width:820px;padding:6px 10px;border-radius:8px}
+.cnote.paused{background:#fdf3cf;border:1.5px solid #c9a227;color:#7a5c00}
+.cnote.finished{background:#ddf2dd;border:1.5px solid #2e7d32;color:#195a1e}
+.xembtn{margin-top:9px;background:#2c5aa0;color:#fff;border:none;border-radius:8px;
+padding:5px 18px;font-size:14px;font-weight:bold;cursor:pointer}
+.xembtn:hover{background:#1b3a6e}
+.xem{display:none;margin-top:10px;border-top:1.5px dashed #bbb;padding-top:10px}
+.xsec{font-size:13.5px;color:#3a5a8c;font-weight:bold;margin-bottom:5px}
+.xfull{font-size:14px;line-height:1.55;max-width:840px;white-space:pre-wrap;color:#222;
+background:#f7f7f2;border:1.5px solid #ddd;border-radius:8px;padding:10px 14px}
+.xlink{margin:10px 0 6px;font-size:14px}
+.xlink a{color:#1b3a6e;font-weight:bold}
+.xpdf{width:100%;height:560px;border:2px solid #bbb;border-radius:8px;background:#f0f0f0}
 </style>
 </head>
 <body>
 <h1>HÌNH CÂY — 4 PAPERS</h1>
-<div class="sub">Paper → section → theorem · lá màu theo trạng thái · tự nạp dữ liệu mỗi phút</div>
+<div class="sub">Mỗi giả thuyết một khối riêng · nút Xem mở paper bản mới nhất đúng mục của giả thuyết · tự nạp dữ liệu mỗi phút</div>
 <div class="upd">Dữ liệu cập nhật lúc: <span id="upd">…</span></div>
 <div class="nav"><a href="index.html">← bản chips theo trạng thái</a></div>
 <div class="err" id="err">Chưa tải được dữ liệu — đang thử lại…</div>
 <div class="tabs" id="tabs"></div>
 <div class="tree" id="tree"></div>
-<div class="legend"><i style="background:#2e7d32"></i>finished <i style="background:#c62828"></i>attacking <i style="background:#9a9a9a"></i>open</div>
+<div class="legend"><i style="background:#2e7d32"></i>đã xong <i style="background:#c62828"></i>đang đánh <i style="background:#e6b800"></i>tạm dừng <i style="background:#9a9a9a"></i>còn mở</div>
 <script>
 var DATA=null, CUR=0;
-var CN={finished:"finished",attacking:"đang đánh",open:"open"};
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+var STC={finished:"#2e7d32",attacking:"#c62828",paused:"#a87e00",open:"#8a8a8a"};
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function ago(iso){var ms=Date.now()-new Date(iso).getTime();if(ms<0)ms=0;var m=Math.floor(ms/60000);
+ if(m<1)return "vừa bắt đầu";if(m<60)return m+" phút";
+ var h=Math.floor(m/60);return h+" giờ"+(m%60?" "+(m%60)+" phút":"");}
+function atkLines(list){
+ var atk="";
+ (list||[]).forEach(function(a){
+   if(a.completed){
+     atk+='<div class="atkline done"><span class="atkbadge done">'+a.agents+' agents</span> đã xong'+(a.status?" · "+esc(a.status):"")+(a.mission?" · "+esc(a.mission):"")+"</div>";
+   } else {
+     atk+='<div class="atkline"><span class="atkbadge">'+a.agents+' agents</span> đang đánh '+ago(a.started)+(a.mission?" · "+esc(a.mission):"")+"</div>";
+   }
+ });
+ return atk;
+}
+function toggleXem(btn){
+ var x=btn.parentNode.querySelector(".xem");
+ if(!x)return;
+ var open=x.style.display==="block";
+ x.style.display=open?"none":"block";
+ btn.textContent=open?"Xem":"Đóng";
+ if(!open){
+   var f=x.querySelector("iframe.xpdf");
+   if(f&&!f.getAttribute("src")&&f.getAttribute("data-src"))f.setAttribute("src",f.getAttribute("data-src"));
+ }
+}
+function xemHTML(t){
+ if(!t.full)return "";
+ var h='<button class="xembtn" onclick="toggleXem(this)">Xem</button>';
+ h+='<div class="xem">';
+ if(t.sec)h+='<div class="xsec">Mục trong paper: '+esc(t.sec)+(t.page?" · trang "+t.page+" trong bản mới nhất":"")+"</div>";
+ h+='<div class="xfull">'+esc(t.full)+"</div>";
+ if(t.pdf&&t.page){
+   var url=t.pdf+"#page="+t.page;
+   h+='<div class="xlink"><a href="'+esc(url)+'" target="_blank" rel="noopener">Mở paper bản mới nhất tại đúng mục này (trang '+t.page+') ↗</a></div>';
+   h+='<iframe class="xpdf" data-src="'+esc(url)+'" title="paper"></iframe>';
+ }
+ h+="</div>";
+ return h;
+}
+function block(t){
+ var col=STC[t.status]||"#8a8a8a";
+ var line1=esc(t.dispnum||t.num||"")+(t.topic?": "+esc(t.topic):"")+' <span class="st" style="color:'+col+'">('+esc(t.sword||t.status)+")</span>";
+ var h='<div class="cblock" style="border-left-color:'+col+'">';
+ h+='<div class="lname">'+line1+"</div>";
+ if(t.summary)h+='<div class="csummary">'+esc(t.summary)+"</div>";
+ if(t.note)h+='<div class="cnote finished">'+esc(t.note)+"</div>";
+ (t.notes||[]).forEach(function(nt){
+   h+='<div class="cnote '+esc(nt.status||"paused")+'">'+esc(nt.text||"")+"</div>";
+ });
+ h+=atkLines(t.attacks);
+ h+=xemHTML(t);
+ h+="</div>";
+ return h;
+}
+function leaf(t){
+ var line1=esc(t.dispnum||t.num||"")+(t.topic?": "+esc(t.topic):"")+' <span class="st st-'+t.status+'">('+esc(t.sword||t.status)+")</span>";
+ var line2=t.desc?'<div class="ldesc">'+esc(t.desc)+"</div>":"";
+ var note=t.note?'<div class="lnote">'+esc(t.note)+"</div>":"";
+ return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+note+atkLines(t.attacks)+"</div></div>";
+}
 function render(){
  if(!DATA||!DATA.length)return;
  var p=DATA[CUR%DATA.length];
@@ -59,32 +143,29 @@ function render(){
  Array.prototype.forEach.call(tb.children,function(el){el.onclick=function(){CUR=+el.getAttribute("data-i");location.hash=["hub","a","e3","lwm","thesis"][CUR];render();};});
  var h='<div class="phead">'+esc(p.name)+' <span class="count">'+esc(p.version||"")+"</span></div>"
       +'<div class="pintro">'+esc(p.intro||"")+"</div>";
+ var conjs=p.conjectures||[];
+ if(conjs.length){
+   h+='<div class="sec">CÁC GIẢ THUYẾT ('+conjs.length+")</div>";
+   conjs.forEach(function(t,i){
+     if(i>0)h+='<div class="sep">'+"_".repeat(150)+"</div>";
+     h+=block(t);
+   });
+ }
  p.sections.forEach(function(s){
+   var items=(s.theorems||[]).filter(function(t){return !(conjs.length&&t.env==="conjecture");});
+   var subs=(s.subs||[]).map(function(x){return {title:x.title,
+     theorems:(x.theorems||[]).filter(function(t){return !(conjs.length&&t.env==="conjecture");})};})
+     .filter(function(x){return x.theorems.length;});
+   if(!items.length&&!subs.length)return;
    h+='<div class="sec">'+esc(s.title)+"</div>";
-   (s.theorems||[]).forEach(function(t){h+=leaf(t);});
-   (s.subs||[]).forEach(function(x){
-     if((x.theorems||[]).length){h+='<div class="sub2">'+esc(x.title)+"</div>";
-       x.theorems.forEach(function(t){h+=leaf(t);});}
+   items.forEach(function(t){h+=leaf(t);});
+   subs.forEach(function(x){
+     h+='<div class="sub2">'+esc(x.title)+"</div>";
+     x.theorems.forEach(function(t){h+=leaf(t);});
    });
  });
  document.getElementById("tree").innerHTML=h;
  document.getElementById("upd").textContent=DATA.updated_at||"";
-}
-function ago(iso){var ms=Date.now()-new Date(iso).getTime();if(ms<0)ms=0;var m=Math.floor(ms/60000);
- if(m<1)return "vừa bắt đầu";if(m<60)return m+" phút";
- var h=Math.floor(m/60);return h+" giờ"+(m%60?" "+(m%60)+" phút":"");}
-function leaf(t){
- var line1=esc(t.num||"")+(t.topic?": "+esc(t.topic):"")+' <span class="st st-'+t.status+'">('+esc(t.sword||t.status)+")</span>";
- var line2=t.desc?'<div class="ldesc">'+esc(t.desc)+"</div>":"";
- var atk="";
- (t.attacks||[]).forEach(function(a){
-   if(a.completed){
-     atk+='<div class="atkline" style="color:#2e7d32"><span class="atkbadge" style="background:#2e7d32">'+a.agents+' agents</span> đã xong'+(a.status?" · "+esc(a.status):"")+(a.mission?" · "+esc(a.mission):"")+"</div>";
-   } else {
-     atk+='<div class="atkline"><span class="atkbadge">'+a.agents+' agents</span> đang đánh '+ago(a.started)+(a.mission?" · "+esc(a.mission):"")+"</div>";
-   }
- });
- return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+atk+"</div></div>";
 }
 function __paperTree(d){
  if(!d||!d.papers||!d.papers.length)return;
