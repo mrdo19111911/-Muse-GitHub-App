@@ -78,7 +78,11 @@ function leaf(t){
  var line2=t.desc?'<div class="ldesc">'+esc(t.desc)+"</div>":"";
  var atk="";
  (t.attacks||[]).forEach(function(a){
-   atk+='<div class="atkline"><span class="atkbadge">'+a.agents+' agents</span> đang đánh '+ago(a.started)+(a.mission?" · "+esc(a.mission):"")+"</div>";
+   if(a.completed){
+     atk+='<div class="atkline" style="color:#2e7d32"><span class="atkbadge" style="background:#2e7d32">'+a.agents+' agents</span> đã xong'+(a.status?" · "+esc(a.status):"")+(a.mission?" · "+esc(a.mission):"")+"</div>";
+   } else {
+     atk+='<div class="atkline"><span class="atkbadge">'+a.agents+' agents</span> đang đánh '+ago(a.started)+(a.mission?" · "+esc(a.mission):"")+"</div>";
+   }
  });
  return '<div class="leaf"><span class="dot '+t.status+'"></span><div><div class="lname">'+line1+"</div>"+line2+atk+"</div></div>";
 }
