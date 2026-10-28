@@ -52,16 +52,25 @@
    "note": "Chưa có file mới"
   },
   {
-   "start_time": "11:40",
+   "start_time": "11:41",
    "agent_name": "Điều phối viên vòng v3",
    "task_name": "Bản v3: sửa hẹp 2 câu và chạy lại chuỗi cổng",
    "status": "running",
-   "updated_at": "11:40",
+   "updated_at": "11:41",
    "team": "Bản thử hai chế độ",
-   "note": "Cổng phản biện v3 phán chấp nhận"
+   "note": "Cổng truy vết v3 đạt 20 trên 20"
   }
  ],
  "events": [
+  {
+   "start_time": "11:41",
+   "agent_name": "Điều phối viên vòng v3",
+   "task_name": "Bản v3: sửa hẹp 2 câu và chạy lại chuỗi cổng",
+   "status": "running",
+   "updated_at": "11:41",
+   "team": "Bản thử hai chế độ",
+   "note": "Cổng truy vết v3 đạt 20 trên 20"
+  },
   {
    "start_time": "11:40",
    "agent_name": "Điều phối viên vòng v3",
@@ -124,15 +133,6 @@
    "updated_at": "16:30",
    "team": "Bản thử hai chế độ",
    "note": "Tiếp nối đúng từ vòng đọc 2"
-  },
-  {
-   "start_time": "16:15",
-   "agent_name": "Lane tiên đề tô-pô — đợt 7 sóng 1",
-   "task_name": "Đợt 7 sóng 1: tấn công tiên đề tô-pô",
-   "status": "running",
-   "updated_at": "16:15",
-   "team": "Nhánh elliptic",
-   "note": "Chưa có file mới"
   }
  ]
 }
