@@ -1,8 +1,8 @@
 {
  "generated_at": "18:36",
  "counts": {
-  "running": 5,
-  "done": 1,
+  "running": 4,
+  "done": 2,
   "stuck": 0
  },
  "items": [
@@ -52,16 +52,25 @@
    "note": "Chưa có file mới"
   },
   {
-   "start_time": "11:41",
+   "start_time": "11:44",
    "agent_name": "Điều phối viên vòng v3",
    "task_name": "Bản v3: sửa hẹp 2 câu và chạy lại chuỗi cổng",
-   "status": "running",
-   "updated_at": "11:41",
+   "status": "done",
+   "updated_at": "11:44",
    "team": "Bản thử hai chế độ",
-   "note": "Cổng truy vết v3 đạt 20 trên 20"
+   "note": "Vòng v3 xong cả 4 cổng đều đạt"
   }
  ],
  "events": [
+  {
+   "start_time": "11:44",
+   "agent_name": "Điều phối viên vòng v3",
+   "task_name": "Bản v3: sửa hẹp 2 câu và chạy lại chuỗi cổng",
+   "status": "done",
+   "updated_at": "11:44",
+   "team": "Bản thử hai chế độ",
+   "note": "Vòng v3 xong cả 4 cổng đều đạt"
+  },
   {
    "start_time": "11:41",
    "agent_name": "Điều phối viên vòng v3",
@@ -124,15 +133,6 @@
    "updated_at": "18:36",
    "team": "Bản thử hai chế độ",
    "note": "Chế độ đưa xong 3 trên 4 cổng đạt truy vết trượt 2 câu Hanh duyệt làm v3"
-  },
-  {
-   "start_time": "16:23",
-   "agent_name": "Điều phối viên chế độ đưa",
-   "task_name": "Chế độ đưa: tiếp nối từ vòng đọc 2 sang cổng phản biện mô phỏng và gói tái lập",
-   "status": "running",
-   "updated_at": "16:30",
-   "team": "Bản thử hai chế độ",
-   "note": "Tiếp nối đúng từ vòng đọc 2"
   }
  ]
 }
